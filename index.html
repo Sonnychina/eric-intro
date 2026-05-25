@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>胡云龙 Eric · 跨境电商运营总监</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0b;
+    --ink-rgb:10,10,11;
+    --paper:#f1efea;
+    --paper-rgb:241,239,234;
+    --paper-tint:#e8e5de;
+    --ink-tint:#18181a;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --serif-en:"Playfair Display","Source Serif 4",Georgia,serif;
+    --serif-body-en:"Source Serif 4",Georgia,serif;
+    --serif-zh:"Noto Serif SC",source-han-serif-sc,serif;
+    --sans-zh:"Noto Sans SC",source-han-sans-sc,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--sans-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
+  canvas#bg-light{opacity:0}
+  canvas#bg-dark{opacity:1}
+  body.light-bg canvas#bg-light{opacity:1}
+  body.light-bg canvas#bg-dark{opacity:0}
+  body.low-power canvas.bg{display:none!important}
+
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{width:100vw;height:100vh;flex:0 0 100vw;position:relative;padding:6vh 6vw 10vh 6vw;display:flex;flex-direction:column;overflow:hidden}
+  .slide.light{color:var(--ink);background:var(--paper)}
+  .slide.dark{color:var(--paper);background:var(--ink)}
+
+  .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
+  .slide.light::before{background:rgba(var(--paper-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.dark::before{background:rgba(var(--ink-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none}
+  .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none}
+  .slide.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+  .slide.hero.light::after{background:linear-gradient(180deg,rgba(var(--paper-rgb),.28) 0%,rgba(var(--paper-rgb),0) 14%,rgba(var(--paper-rgb),0) 86%,rgba(var(--paper-rgb),.28) 100%)}
+  .slide.hero.dark::after{background:linear-gradient(180deg,rgba(var(--ink-rgb),.32) 0%,rgba(var(--ink-rgb),0) 14%,rgba(var(--ink-rgb),0) 86%,rgba(var(--ink-rgb),.32) 100%)}
+
+  .chrome{display:flex;justify-content:space-between;align-items:flex-start;font-family:var(--mono);font-size:max(11px,.78vw);letter-spacing:.2em;text-transform:uppercase;opacity:.62}
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--mono);font-size:max(11px,.78vw);letter-spacing:.18em;text-transform:uppercase;opacity:.5}
+
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:2.6vh}
+  .lead{font-family:var(--serif-zh);font-weight:400;font-size:1.75vw;line-height:1.5;opacity:.86}
+  .meta-row{display:flex;gap:1.2em;align-items:baseline;flex-wrap:wrap;font-family:var(--mono);font-size:max(12px,.92vw);letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+
+  .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .frame.grid-2-7-5,.frame.grid-2-6-6,.frame.grid-2-8-4{display:grid}
+
+  .h-hero{font-family:var(--serif-zh);font-weight:900;font-size:10vw;line-height:.96;letter-spacing:-.02em}
+  .h-xl{font-family:var(--serif-zh);font-weight:700;font-size:6.2vw;line-height:1.08;letter-spacing:-.01em}
+  .h-sub{font-family:var(--serif-zh);font-weight:500;font-size:3.1vw;line-height:1.25;letter-spacing:0;opacity:.7}
+  .h-md{font-family:var(--serif-zh);font-weight:600;font-size:2.3vw;line-height:1.3}
+
+  .callout{padding:3vh 2.4vw;border-left:3px solid currentColor;font-family:var(--serif-zh);font-size:max(15px,1.2vw);line-height:1.55;opacity:.92}
+  .slide.light .callout{background:rgba(var(--ink-rgb),.05)}
+  .slide.dark .callout{background:rgba(var(--paper-rgb),.06)}
+  .callout-src{display:block;margin-top:1.6vh;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+
+  .rowline{display:grid;grid-template-columns:1fr 2fr 1fr;gap:2vw;padding:2.2vh 0;border-top:1px solid currentColor;align-items:center;border-color:rgba(127,127,127,.25)}
+  .rowline:last-child{border-bottom:1px solid currentColor;border-color:rgba(127,127,127,.25)}
+  .rowline .k{font-family:var(--serif-zh);font-weight:700;font-size:1.7vw}
+  .rowline .v{font-family:var(--sans-zh);font-weight:400;font-size:max(14px,1.2vw);opacity:.85;line-height:1.55}
+  .rowline .m{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;justify-self:end}
+
+  .stat-card{display:flex;flex-direction:column;gap:.8vh;align-items:flex-start;padding-top:1.6vh;border-top:1px solid currentColor;border-color:rgba(127,127,127,.3)}
+  .stat-card .stat-label{font-family:var(--mono);font-size:max(10px,.78vw);letter-spacing:.24em;text-transform:uppercase;opacity:.55}
+  .stat-card .stat-nb{font-family:var(--serif-en);font-weight:800;font-size:5.8vw;line-height:.9;letter-spacing:-.03em;font-feature-settings:"tnum";margin-top:.4vh}
+  .stat-card .stat-nb .stat-unit{font-family:var(--serif-zh);font-weight:500;font-size:.38em;letter-spacing:0;opacity:.72;margin-left:.14em}
+  .stat-card .stat-note{font-family:var(--sans-zh);font-weight:400;font-size:max(13px,1.05vw);line-height:1.5;opacity:.72;margin-top:.6vh}
+  .grid-4{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:4vh 6vw;flex:1;align-content:center}
+  .grid-4 .stat-card .stat-nb{font-size:5vw}
+
+  .pipeline-section{margin-top:4.4vh;padding-top:2.8vh;border-top:1px dashed rgba(127,127,127,.32)}
+  .pipeline-section:first-of-type{border-top:0;padding-top:0;margin-top:3vh}
+  .pipeline-label{font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.24em;text-transform:uppercase;opacity:.62;margin-bottom:2.2vh}
+  .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2vw}
+  .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
+  .pipeline[data-cols="2"]{grid-template-columns:repeat(2,1fr)}
+  .step{display:flex;flex-direction:column;gap:.8vh;padding-top:1.4vh;border-top:1px solid currentColor;border-color:rgba(127,127,127,.35)}
+  .step-nb{font-family:var(--serif-en);font-style:italic;font-weight:500;font-size:1.15vw;opacity:.45}
+  .step-title{font-family:var(--sans-zh);font-weight:700;font-size:1.55vw;letter-spacing:.01em;line-height:1.2}
+  .step-desc{font-family:var(--sans-zh);font-weight:400;font-size:max(12px,.95vw);line-height:1.45;opacity:.72}
+
+  .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:3vw 4vh;align-items:start}
+  .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:3vw 4vh;align-items:start}
+
+  .ico-md{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;width:1.8vw;height:1.8vw;stroke-width:1.3;display:inline-block;vertical-align:-.4em}
+
+  #nav{position:fixed;left:50%;bottom:2.6vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(10px)}
+  #nav .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .3s ease;border:0;padding:0}
+  #nav .dot:hover{background:rgba(255,255,255,.5);transform:scale(1.15)}
+  #nav .dot.active{background:rgba(255,255,255,.95);width:22px;border-radius:999px}
+  body.light-bg #nav{background:rgba(255,255,255,.25)}
+  body.light-bg #nav .dot{background:rgba(var(--ink-rgb),.25)}
+  body.light-bg #nav .dot.active{background:rgba(var(--ink-rgb),.9)}
+  #hint{position:fixed;bottom:3vh;right:3vw;z-index:30;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.4;mix-blend-mode:difference;color:#aaa}
+  body.low-power #hint{opacity:.72;color:var(--paper);mix-blend-mode:normal}
+  body.light-bg.low-power #hint{color:var(--ink)}
+
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-animate="pipeline"] [data-anim]{opacity:.15}
+  body.low-power #deck{transition:none!important}
+  body.low-power *,body.low-power *::before,body.low-power *::after{animation:none!important;transition:none!important}
+  body.low-power [data-anim]{opacity:1!important;transform:none!important}
+
+  .contact-row{display:flex;align-items:center;gap:1.6vw;font-family:var(--sans-zh);font-size:max(15px,1.35vw);line-height:1.6}
+  .contact-label{font-family:var(--mono);font-size:max(10px,.82vw);letter-spacing:.24em;text-transform:uppercase;opacity:.5;min-width:5vw}
+  .contact-val{font-family:var(--serif-zh);font-weight:400;opacity:.9}
+
+  @media(max-width:900px){
+    .h-hero{font-size:14vw}.h-xl{font-size:9vw}
+    .pipeline{grid-template-columns:repeat(2,1fr)}
+    .grid-2-7-5,.grid-2-8-4{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<script>
+(function(){
+  const KEY='guizang-ppt-low-power';
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const stored=localStorage.getItem(KEY);
+  window.__lowPowerMode=stored==='1'||(stored===null&&reduced);
+  function updateHint(){const h=document.getElementById('hint');if(h)h.textContent=`← → 翻页 · B ${window.__lowPowerMode?'动态':'静态'} · ESC 索引`;}
+  window.__setLowPowerMode=function(on,opts={}){
+    window.__lowPowerMode=!!on;
+    document.body.classList.toggle('low-power',window.__lowPowerMode);
+    if(opts.persist!==false)localStorage.setItem(KEY,window.__lowPowerMode?'1':'0');
+    if(window.__lowPowerMode&&document.getAnimations)document.getAnimations().forEach(a=>a.cancel());
+    updateHint();
+    dispatchEvent(new CustomEvent('ppt-low-power-change',{detail:{on:window.__lowPowerMode}}));
+    if(window.__playSlide)window.__playSlide(window.__currentSlideIndex||0);
+  };
+  document.body.classList.toggle('low-power',window.__lowPowerMode);
+  addEventListener('DOMContentLoaded',updateHint,{once:true});
+})();
+</script>
+
+<canvas id="bg-dark" class="bg"></canvas>
+<canvas id="bg-light" class="bg"></canvas>
+<div id="hint">← → 翻页 · B 静态 · ESC 索引</div>
+
+<div id="deck">
+
+<!-- ===== P1 · Cover · hero dark ===== -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div>个人介绍 · Eric 胡云龙</div>
+    <div>01 / 05</div>
+  </div>
+  <div class="frame" style="display:grid;gap:4vh;align-content:center;min-height:80vh">
+    <div class="kicker" data-anim>跨境电商 · 15年全道运营管理</div>
+    <h1 class="h-hero" data-anim>胡云龙<span style="font-family:var(--serif-en);font-weight:400;font-size:.48em;opacity:.6;margin-left:.3em;letter-spacing:-.01em">Eric</span></h1>
+    <h2 class="h-sub" style="white-space:nowrap" data-anim>跨境电商运营总监</h2>
+    <p class="lead" style="max-width:64vw" data-anim>
+      15 年深耕跨境电商 —— 从 Amazon 一线运营到亿级品牌全道管理，<br>
+      整合 Amazon · TikTok · DTC 独立站，以数据驱动规模化增长。
+    </p>
+    <div class="meta-row" data-anim>
+      <span>15年经验</span><span>·</span><span>1.1亿年销售</span><span>·</span><span>17人团队</span><span>·</span><span>10+ 平台精通</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div>求职意向：跨境电商运营总监 / 独立站运营总监</div>
+    <div>— 2025 —</div>
+  </div>
+</section>
+
+<!-- ===== P2 · About · light ===== -->
+<section class="slide light">
+  <div class="chrome">
+    <div>关于我 · About</div>
+    <div>02 / 05</div>
+  </div>
+  <div class="frame grid-2-7-5" style="padding-top:5vh">
+    <!-- 左列 -->
+    <div style="display:flex;flex-direction:column;justify-content:space-between;gap:3vh">
+      <div>
+        <div class="kicker" data-anim>15年成长 · 从运营到总监</div>
+        <h2 class="h-xl" style="font-size:5.8vw;white-space:nowrap" data-anim>从零到亿级</h2>
+        <p class="lead" style="margin-top:3vh" data-anim>
+          2010 年入行跨境，从 eBay 基础运营起步，历经 Amazon 运营经理、运营总监，逐步主导亿级品牌从 0 到 1 的全渠道搭建。
+        </p>
+        <p style="font-family:var(--sans-zh);font-size:max(14px,1.15vw);line-height:1.75;opacity:.75;margin-top:2vh" data-anim>
+          擅长高客单价品类（储能电源 / 3C / 家居 / 3D 打印机 / eBike），整合运营 Amazon + TikTok Shop + Shopify DTC 独立站全渠道，具备完整的品牌出海方法论。
+        </p>
+      </div>
+      <div class="callout" data-anim>
+        "创业型人格，自驱力强，勇于创新，<br>善用 AI + Agent + RPA 提高工作效率。"
+        <span class="callout-src">— 个人特质</span>
+      </div>
+    </div>
+    <!-- 右列：职业节点 -->
+    <div style="margin-top:7vh" data-anim>
+      <div class="rowline">
+        <div class="k">2010—2016</div>
+        <div class="v">eBay / Amazon 运营，产品开发 100+</div>
+        <div class="m">入行</div>
+      </div>
+      <div class="rowline">
+        <div class="k">2016—2018</div>
+        <div class="v">Amazon 运营经理，单月峰值 70万 USD</div>
+        <div class="m">经理</div>
+      </div>
+      <div class="rowline">
+        <div class="k">2018—2020</div>
+        <div class="v">运营经理，欧洲市场 0→4200万，毛利 30%</div>
+        <div class="m">增长</div>
+      </div>
+      <div class="rowline">
+        <div class="k">2021—2023</div>
+        <div class="v">运营总监，17人团队，年销售额 1.1亿</div>
+        <div class="m">总监</div>
+      </div>
+      <div class="rowline">
+        <div class="k">2024—2025</div>
+        <div class="v">运营总监，独立站从 0 到稳定运营</div>
+        <div class="m">DTC</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 02 · 职业成长路径</div>
+    <div>— · —</div>
+  </div>
+</section>
+
+<!-- ===== P3 · Skills · dark · Pipeline ===== -->
+<section class="slide dark" data-animate="pipeline">
+  <div class="chrome">
+    <div>核心能力 · Skills</div>
+    <div>03 / 05</div>
+  </div>
+  <div class="frame">
+    <div class="kicker" data-anim>五大专长 · Core Competencies</div>
+    <h2 class="h-xl" style="white-space:nowrap" data-anim>核心能力</h2>
+
+    <div class="pipeline-section">
+      <div class="pipeline-label">平台运营 · Platform Operations</div>
+      <div class="pipeline" data-cols="3">
+        <div class="step" data-anim="step">
+          <div class="step-nb">01</div>
+          <div class="step-title">多平台精通</div>
+          <div class="step-desc">Amazon / Walmart / eBay / Newegg / Wayfair / TikTok / Shein / Temu，差异化选品与运营策略</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">02</div>
+          <div class="step-title">Amazon 精细化运营</div>
+          <div class="step-desc">广告 ACOS 管控 10%~15%，白帽差异化运营，库存周转率 35 天，秒杀节奏把控</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">03</div>
+          <div class="step-title">DTC 独立站全链路</div>
+          <div class="step-desc">Shopify / WordPress 建站，SEO / SEM / KOL / EDM / Affiliate / PR，主导 4 个品牌独立站搭建</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipeline-section">
+      <div class="pipeline-label">增长与管理 · Growth & Leadership</div>
+      <div class="pipeline" data-cols="2">
+        <div class="step" data-anim="step">
+          <div class="step-nb">04</div>
+          <div class="step-title">数据驱动决策</div>
+          <div class="step-desc">Excel / Tableau / GA 数据分析，BI 看板搭建，AI + Agent + RPA 提效，指纹浏览器多账号运营</div>
+        </div>
+        <div class="step" data-anim="step">
+          <div class="step-nb">05</div>
+          <div class="step-title">团队与合规管理</div>
+          <div class="step-desc">最大管理 17 人团队，OKR 目标拆解，VOC 产品迭代；VAT / GDPR / 商标专利 / 跨境物流合规</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 03 · 核心能力</div>
+    <div>按 → 逐步展开</div>
+  </div>
+</section>
+
+<!-- ===== P4 · Results · light · Big Numbers ===== -->
+<section class="slide light">
+  <div class="chrome">
+    <div>代表成绩 · Results</div>
+    <div>04 / 05</div>
+  </div>
+  <div class="frame" style="padding-top:2vh;gap:2vh">
+    <div>
+      <div class="kicker" data-anim>用数据说话 · Numbers Tell the Story</div>
+      <h2 class="h-xl" style="white-space:nowrap;font-size:5vw" data-anim>代表成绩</h2>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:3vw">
+      <div class="grid-4" style="height:100%;gap:2vh 3vw" data-anim>
+        <div class="stat-card">
+          <div class="stat-label">Peak Annual Revenue</div>
+          <div class="stat-nb">1.1<span class="stat-unit">亿</span></div>
+          <div class="stat-note">带领 17 人团队，年销售额达 1.1 亿元人民币</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Experience</div>
+          <div class="stat-nb">15<span class="stat-unit">年+</span></div>
+          <div class="stat-note">2010 年入行，跨境电商全道运营与管理经验</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Team Scale</div>
+          <div class="stat-nb">17<span class="stat-unit">人</span></div>
+          <div class="stat-note">最大管理 17 人跨职能团队，单月峰值 70 万 USD</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Platforms</div>
+          <div class="stat-nb">10<span class="stat-unit">+ 平台</span></div>
+          <div class="stat-note">Amazon / Walmart / eBay / TikTok / Shein / Temu 等全平台精通</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1.5vh;min-height:0" data-anim>
+        <div class="pipeline-label">成就视频 · Achievement Video</div>
+        <video src="achievement.mp4" controls style="flex:1;width:100%;min-height:0;border-radius:6px;display:block;background:#000;object-fit:contain"></video>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 04 · 代表成绩</div>
+    <div>Results · Numbers</div>
+  </div>
+</section>
+
+<!-- ===== P5 · Contact · hero dark ===== -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div>联系我 · Contact</div>
+    <div>05 / 05</div>
+  </div>
+  <div class="frame" style="display:grid;gap:5vh;align-content:center;min-height:80vh">
+    <div class="kicker" data-anim>Let's Connect · 欢迎交流合作</div>
+    <h1 class="h-hero" style="font-size:8vw;white-space:nowrap" data-anim>找到我</h1>
+    <p class="lead" style="max-width:58vw" data-anim>
+      15 年跨境电商运营管理经验，擅长 0-1 搭建亿级品牌全渠道体系。<br>
+      期待探讨运营总监 / 独立站总监 / 产品开发总监等机会。
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:2.6vh;margin-top:1vh" data-anim>
+      <div class="contact-row">
+        <i data-lucide="phone" class="ico-md" style="opacity:.65;flex-shrink:0"></i>
+        <span class="contact-label">电话</span>
+        <span class="contact-val">135 3033 9507</span>
+      </div>
+      <div class="contact-row">
+        <i data-lucide="mail" class="ico-md" style="opacity:.65;flex-shrink:0"></i>
+        <span class="contact-label">邮箱</span>
+        <span class="contact-val">1107759852@qq.com</span>
+      </div>
+      <div class="contact-row">
+        <i data-lucide="map-pin" class="ico-md" style="opacity:.65;flex-shrink:0"></i>
+        <span class="contact-label">所在地</span>
+        <span class="contact-val">深圳 · 龙岗坂田</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>胡云龙 Eric · 跨境电商运营总监</div>
+    <div>— 2025 —</div>
+  </div>
+</section>
+
+</div>
+<div id="nav"></div>
+
+<script>
+const VS=`attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+const FS_DARK=`precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+vec3 palette(float t,vec3 a,vec3 b,vec3 c,vec3 d){return a+b*cos(6.28318*(c*t+d));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse*2.0-1.0;m.x*=u_resolution.x/u_resolution.y;
+  float md=length(p-m);float mr=sin(md*15.0-u_time*4.0)*exp(-md*3.0);p+=mr*0.08;
+  vec2 p0=p;
+  for(float i=1.0;i<4.0;i++){p.x+=0.1/i*sin(i*3.0*p.y+u_time*0.4)+0.05;p.y+=0.1/i*cos(i*2.0*p.x+u_time*0.3)-0.05;}
+  float r=length(p);float ang=atan(p.y,p.x);
+  vec3 a=vec3(0.12,0.12,0.13);vec3 b=vec3(0.03,0.04,0.05);vec3 c=vec3(1.0,1.0,1.0);vec3 d=vec3(0.1,0.2,0.4);
+  vec3 col=palette(r*1.5+p0.x*0.5+u_time*0.1,a,b,c,d);
+  float disp=sin(r*25.0-u_time*1.5+ang*2.0)*0.5+0.5;col+=vec3(disp*0.015,disp*0.01,disp*0.02);
+  float hi=pow(sin(p.x*4.0+p.y*3.0+u_time)*0.5+0.5,8.0);col+=hi*0.08;
+  col=mix(vec3(0.05,0.05,0.06),col,0.85);gl_FragColor=vec4(col,1.0);}`;
+const FS_LIGHT=`precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){vec2 i=floor(p),f=fract(p);float a=hash(i),b=hash(i+vec2(1,0));float c=hash(i+vec2(0,1)),d=hash(i+vec2(1,1));vec2 u=f*f*(3.0-2.0*f);return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;}
+float fbm(vec2 p){float v=0.0,a=0.5;mat2 m=mat2(0.80,0.60,-0.60,0.80);for(int i=0;i<5;i++){v+=a*noise(p);p=m*p*2.02;a*=0.5;}return v;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;vec2 p=uv;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse;m.x*=u_resolution.x/u_resolution.y;vec2 md=p-m;float dl=length(md);
+  p+=normalize(md+vec2(0.0001))*exp(-dl*5.0)*0.03;
+  vec2 q=vec2(fbm(p*1.8+u_time*0.07),fbm(p*1.8+vec2(5.2,1.3)+u_time*0.06));
+  vec2 r=vec2(fbm(p*2.0+q*1.3+vec2(1.7,9.2)+u_time*0.05),fbm(p*2.0+q*1.3+vec2(8.3,2.8)+u_time*0.04));
+  float f=fbm(p*2.2+r*1.5);
+  vec3 col=mix(vec3(0.86,0.85,0.84),vec3(0.955,0.945,0.925),f);
+  float ph=r.x*2.2+u_time*0.35;col+=vec3(0.78,0.62,0.92)*sin(ph)*0.055;col+=vec3(0.55,0.72,0.95)*sin(ph*0.8+2.0)*0.05;
+  col+=smoothstep(0.48,0.92,f)*0.06;gl_FragColor=vec4(col,1.0);}`;
+
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=e.clientY/innerHeight});
+function bootGL(id,fs){
+  const cv=document.getElementById(id),gl=cv.getContext('webgl',{alpha:false,antialias:true});
+  if(!gl)return()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fs));gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lR=gl.getUniformLocation(prog,'u_resolution'),lT=gl.getUniformLocation(prog,'u_time'),lM=gl.getUniformLocation(prog,'u_mouse');
+  const resize=()=>{const d=Math.min(devicePixelRatio||1,2);cv.width=innerWidth*d;cv.height=innerHeight*d;gl.viewport(0,0,cv.width,cv.height)};
+  addEventListener('resize',resize);resize();
+  return t=>{gl.uniform2f(lR,cv.width,cv.height);gl.uniform1f(lT,t);gl.uniform2f(lM,mouse.x,1-mouse.y);gl.drawArrays(gl.TRIANGLES,0,6);return true};
+}
+let dD=null,dL=null,raf=0,t0=Date.now();
+function startGL(){if(window.__lowPowerMode||raf)return;if(!dD)dD=bootGL('bg-dark',FS_DARK);if(!dL)dL=bootGL('bg-light',FS_LIGHT);t0=Date.now();function loop(){if(window.__lowPowerMode){raf=0;return;}const t=(Date.now()-t0)/1000;dD(t);dL(t);raf=requestAnimationFrame(loop);}raf=requestAnimationFrame(loop);}
+function stopGL(){if(raf)cancelAnimationFrame(raf);raf=0;}
+startGL();addEventListener('ppt-low-power-change',e=>e.detail.on?stopGL():startGL());
+
+const deck=document.getElementById('deck'),slides=deck.querySelectorAll('.slide'),nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+deck.style.width=(total*100)+'vw';
+slides.forEach((s,i)=>{const b=document.createElement('button');b.className='dot';b.setAttribute('aria-label','Page '+(i+1));b.onclick=()=>go(i);nav.appendChild(b);});
+
+function go(n){
+  if(lock)return;idx=Math.max(0,Math.min(total-1,n));window.__currentSlideIndex=idx;
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx],th=el.dataset.theme||(el.classList.contains('light')?'light':'dark');
+  document.body.classList.toggle('light-bg',th==='light');
+  if(window.__playSlide)setTimeout(()=>window.__playSlide(idx),450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+let ovOn=false;
+const ov=document.createElement('div');
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(var(--ink-rgb),.92);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+function buildOv(){
+  ov.innerHTML='';const g=document.createElement('div');g.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');card.style.cssText='cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid '+(i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)')+';transition:border-color .2s';
+    const wrap=document.createElement('div');wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(s.classList.contains('light')?'var(--paper)':'var(--ink)');
+    const cl=s.cloneNode(true);cl.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    cl.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+    wrap.appendChild(cl);const lbl=document.createElement('div');lbl.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);opacity:.7';lbl.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);card.appendChild(lbl);card.onclick=()=>{toggleOv();go(i)};g.appendChild(card);
+  });ov.appendChild(g);
+}
+function toggleOv(){ovOn=!ovOn;if(ovOn){buildOv();ov.style.display='block';}else ov.style.display='none';}
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOv();return;}
+  if(e.key&&e.key.toLowerCase()==='b'&&!e.metaKey&&!e.ctrlKey&&!e.altKey){e.preventDefault();window.__setLowPowerMode(!window.__lowPowerMode);return;}
+  if(ovOn)return;
+  if(['ArrowRight','PageDown',' ','ArrowDown'].includes(e.key)){if(window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+1);return;}
+  if(['ArrowLeft','PageUp','ArrowUp'].includes(e.key))go(idx-1);
+  if(e.key==='Home')go(0);if(e.key==='End')go(total-1);
+});
+let wTO=null,wAcc=0;
+addEventListener('wheel',e=>{wAcc+=e.deltaY+e.deltaX;if(Math.abs(wAcc)>50){if(wAcc>0&&window.__pipeAdvance&&window.__pipeAdvance()){wAcc=0;}else{go(idx+(wAcc>0?1:-1));wAcc=0;}}clearTimeout(wTO);wTO=setTimeout(()=>wAcc=0,150);},{passive:true});
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){if(dx<0&&window.__pipeAdvance&&window.__pipeAdvance())return;go(idx+(dx<0?1:-1));}},{passive:true});
+go(0);
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>if(window.lucide)lucide.createIcons();</script>
+<script type="module">
+let motion;
+try{motion=await import('./assets/motion.min.js');}
+catch(e1){try{motion=await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');}
+catch(e2){document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});}}
+if(motion){
+  const{animate,stagger}=motion;
+  document.body.classList.add('motion-ready');
+  const EASE=[.22,1,.36,1];
+  const slides=[...document.querySelectorAll('.slide')];
+  let pipeStep=-1,lastIdx=-1;
+  function reset(slide){slide.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='';el.style.transform=''});}
+  function revealStatic(slide){reset(slide);document.getAnimations?.().forEach(a=>a.cancel());slide.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});}
+  function playSlide(i){
+    const slide=slides[i];if(!slide)return;lastIdx=i;
+    const recipe=slide.dataset.animate||(slide.classList.contains('hero')?'hero':'cascade');
+    if(window.__lowPowerMode){revealStatic(slide);return;}
+    if(recipe==='pipeline'){
+      pipeStep=-1;
+      const nonSteps=[...slide.querySelectorAll('[data-anim]')].filter(el=>el.dataset.anim!=='step');
+      slide.querySelectorAll('[data-anim="step"]').forEach(el=>{el.style.opacity='0.15';el.style.transform='none'});
+      if(nonSteps.length)animate(nonSteps,{opacity:[0,1],y:[16,0]},{duration:.75,delay:stagger(.1,{start:.15}),easing:EASE});
+      return;
+    }
+    reset(slide);const all=[...slide.querySelectorAll('[data-anim]')];if(!all.length)return;
+    if(recipe==='hero'){animate(all,{opacity:[0,1],y:[14,0]},{duration:.9,delay:stagger(.16,{start:.2}),easing:EASE});return;}
+    animate(all,{opacity:[0,1],y:[16,0]},{duration:.75,delay:stagger(.1,{start:.15}),easing:EASE});
+  }
+  function pipeAdvance(){
+    if(window.__lowPowerMode)return false;
+    const slide=slides[lastIdx];if(!slide||slide.dataset.animate!=='pipeline')return false;
+    const steps=[...slide.querySelectorAll('[data-anim="step"]')];
+    if(pipeStep>=steps.length-1)return false;
+    pipeStep++;animate(steps[pipeStep],{opacity:[0.15,1],y:[8,0]},{duration:.5,easing:EASE});return true;
+  }
+  window.__playSlide=playSlide;window.__pipeAdvance=pipeAdvance;playSlide(0);
+}
+</script>
+</body>
+</html>
